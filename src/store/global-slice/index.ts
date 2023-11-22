@@ -18,7 +18,7 @@ export const createSession = createAsyncThunk(
   async () => {
     try {
       const response = await fetch(
-        `https://linkedin-cv-crawler.beta-limited.workers.dev/interview/createsession`,
+        `${process.env.NEXT_PUBLIC_CREATE_SESSION_URL}`,
         {
           headers: {
             "Content-Type": "application/json",
@@ -29,6 +29,25 @@ export const createSession = createAsyncThunk(
         const session = await response.text();
 
         return session;
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  }
+);
+export const fetchProducts = createAsyncThunk(
+  "globalState/fetchProducts",
+  async () => {
+    try {
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_LIST_PRODUCTS_URL}`
+      );
+      if (response.status !== 200) {
+        throw new Error("Failed to fetch products");
+      }
+      if (response.ok) {
+        const products = await response.json();
+        return products;
       }
     } catch (error) {
       console.log(error);
@@ -46,10 +65,19 @@ export const globalSlice = createSlice({
         state.isLoading = true;
       })
       .addCase(createSession.fulfilled, (state, action) => {
-        state.isLoading = false;
         state.session = action.payload!;
       })
       .addCase(createSession.rejected, (state, action) => {
+        state.error = action.error.message!;
+      })
+      .addCase(fetchProducts.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(fetchProducts.fulfilled, (state, action) => {
+        state.products = action.payload!;
+        state.isLoading = false;
+      })
+      .addCase(fetchProducts.rejected, (state, action) => {
         state.isLoading = false;
         state.error = action.error.message!;
       });
@@ -60,3 +88,7 @@ export default globalSlice.reducer;
 
 export const getSession = (state: { globalState: GlobalState }) =>
   state.globalState.session;
+export const getProducts = (state: { globalState: GlobalState }) =>
+  state.globalState.products;
+export const getLoading = (state: { globalState: GlobalState }) =>
+  state.globalState.isLoading;
