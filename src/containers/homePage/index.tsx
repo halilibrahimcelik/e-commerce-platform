@@ -18,7 +18,7 @@ const HomePageContainer = (props: Props) => {
   const session = useSelector(getSession);
   const loading = useSelector(getLoading);
   const productList = useSelector(getProducts);
-  const memoizedFetchProductsList = useMemo(() => {
+  const memoizedThunks = useMemo(() => {
     return () => {
       dispatch(createSession())
         .then(() => dispatch(fetchProducts()))
@@ -27,8 +27,8 @@ const HomePageContainer = (props: Props) => {
   }, [dispatch]);
 
   useEffect(() => {
-    memoizedFetchProductsList();
-  }, [memoizedFetchProductsList]);
+    memoizedThunks();
+  }, [memoizedThunks]);
   return <div>HomePageContainer</div>;
 };
 
