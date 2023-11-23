@@ -11,6 +11,7 @@ import React from "react";
 import { useSelector } from "react-redux";
 import { KeyboardReturn } from "@mui/icons-material";
 import { error } from "console";
+import Wrapper from "@/components/wrapper";
 type Props = {};
 
 const HomePageContainer = (props: Props) => {
@@ -29,7 +30,7 @@ const HomePageContainer = (props: Props) => {
   useEffect(() => {
     memoizedThunks();
   }, [memoizedThunks]);
-  return <div>HomePageContainer</div>;
+  return <Wrapper component="section">HomePageContainer</Wrapper>;
 };
 
 export default HomePageContainer;
