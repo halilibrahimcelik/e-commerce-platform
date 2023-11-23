@@ -1,3 +1,4 @@
+"use client";
 import React, { useMemo } from "react";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 type Props = {
