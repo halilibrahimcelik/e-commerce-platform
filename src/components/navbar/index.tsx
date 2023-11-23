@@ -68,7 +68,7 @@ const Navbar = (props: Props) => {
   return (
     <CustomTheme>
       <header className="bg-white">
-        <Wrapper component="nav" customClass={"py-10"}>
+        <Wrapper component="nav" customClass={"py-5"}>
           <ul className=" justify-between grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
             <li>
               <Image
