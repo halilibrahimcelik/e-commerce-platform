@@ -58,7 +58,18 @@ export const fetchProducts = createAsyncThunk(
 export const globalSlice = createSlice({
   initialState,
   name: "globalState",
-  reducers: {},
+  reducers: {
+    searchedProduct: (state, action) => {
+      const { searchedProduct } = action.payload;
+      const filteredProducts = state.products.filter((product) =>
+        product.name
+          .toLowerCase()
+          .trim()
+          .includes(searchedProduct.toLowerCase().trim())
+      );
+      state.products = filteredProducts;
+    },
+  },
   extraReducers: (builder) => {
     builder
       .addCase(createSession.pending, (state) => {
@@ -84,6 +95,7 @@ export const globalSlice = createSlice({
   },
 });
 
+export const { searchedProduct } = globalSlice.actions;
 export default globalSlice.reducer;
 
 export const getSession = (state: { globalState: GlobalState }) =>

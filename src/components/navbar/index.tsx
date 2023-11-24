@@ -9,6 +9,8 @@ import SearchIcon from "@mui/icons-material/Search";
 import { Button } from "@mui/material";
 import CustomTheme from "@/containers/homePage/theme";
 import Link from "next/link";
+import { useAppDispatch } from "@/store/store";
+import { searchedProduct } from "@/store/global-slice";
 type Props = {};
 const Search = styled("form")(({ theme }) => ({
   position: "relative",
@@ -66,56 +68,58 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 }));
 
 const Navbar = (props: Props) => {
+  const dispatch = useAppDispatch();
   const handleSearch = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     console.log("searching");
     const formData = new FormData(e.currentTarget);
-    const searchedQuery = formData.get("search")?.toString();
+    const searchedQuery = formData.get("search")?.toString().trim();
+    if (searchedQuery) {
+      dispatch(searchedProduct({ searchedProduct: searchedQuery }));
+    }
   };
   return (
-    <CustomTheme>
-      <header className="bg-white">
-        <Wrapper component="nav" customClass={"py-5"}>
-          <ul className=" justify-between grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
-            <li className="flex items-end">
-              <Link href="/">
-                <Image
-                  src={logo}
-                  alt="beta logo"
-                  width={160}
-                  className="object-contain h-full"
-                />
-              </Link>
-            </li>
-            <li className="lg:col-span-2 lg:flex justify-end ">
-              <Search onSubmit={handleSearch}>
-                <SearchIconWrapper>
-                  <SearchIcon sx={{ color: "#abafb8" }} />
-                </SearchIconWrapper>
-                <StyledInputBase
-                  placeholder="Search…"
-                  inputProps={{ "aria-label": "search" }}
-                  name="search"
-                />
-                <Button
-                  sx={{
-                    borderRadius: "0  100px  100px 0",
-                    textTransform: "capitalize",
-                    fontWeight: "400",
-                    width: "200px",
-                  }}
-                  color="primary"
-                  type="submit"
-                  variant="contained"
-                >
-                  Search
-                </Button>
-              </Search>
-            </li>
-          </ul>
-        </Wrapper>
-      </header>
-    </CustomTheme>
+    <header className="bg-white">
+      <Wrapper component="nav" customClass={"py-5"}>
+        <ul className=" justify-between grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
+          <li className="flex items-end">
+            <Link href="/">
+              <Image
+                src={logo}
+                alt="beta logo"
+                width={160}
+                className="object-contain h-full"
+              />
+            </Link>
+          </li>
+          <li className="lg:col-span-2 lg:flex justify-end ">
+            <Search onSubmit={handleSearch}>
+              <SearchIconWrapper>
+                <SearchIcon sx={{ color: "#abafb8" }} />
+              </SearchIconWrapper>
+              <StyledInputBase
+                placeholder="Search…"
+                inputProps={{ "aria-label": "search" }}
+                name="search"
+              />
+              <Button
+                sx={{
+                  borderRadius: "0  100px  100px 0",
+                  textTransform: "capitalize",
+                  fontWeight: "400",
+                  width: "200px",
+                }}
+                color="primary"
+                type="submit"
+                variant="contained"
+              >
+                Search
+              </Button>
+            </Search>
+          </li>
+        </ul>
+      </Wrapper>
+    </header>
   );
 };
 
