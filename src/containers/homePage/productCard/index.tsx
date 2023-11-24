@@ -1,10 +1,10 @@
-import React from "react";
+import React, { useEffect } from "react";
 import Card from "@mui/material/Card";
 import CardActions from "@mui/material/CardActions";
 import CardContent from "@mui/material/CardContent";
 import { motion } from "framer-motion";
 import Button from "@mui/material/Button";
-import { Products } from "@/lib/types";
+import { CartValue, Products } from "@/lib/types";
 import Image from "next/image";
 import StarIcon from "@mui/icons-material/Star";
 import StarOutlineIcon from "@mui/icons-material/StarOutline";
@@ -17,6 +17,16 @@ import RemoveRedEyeIcon from "@mui/icons-material/RemoveRedEye";
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import Divider from "@mui/material/Divider";
+import { useAppDispatch } from "@/store/store";
+import {
+  CartQuantityList,
+  GlobalState,
+  addProductToCart,
+  extractProductFromCart,
+  getSession,
+  getSingleProductQuantity,
+} from "@/store/global-slice";
+import { useSelector } from "react-redux";
 
 const iconClass = {
   width: "fit",
@@ -41,10 +51,19 @@ const ProductCard = ({
   price,
   rating,
 }: Products) => {
-  console.log(originalPrice);
+  const dispatch = useAppDispatch();
+  const session = useSelector(getSession);
+  const singleProductQuantity = useSelector(
+    (state: { globalState: GlobalState }) => getSingleProductQuantity(state, id)
+  );
+  const memoizedQuantity = React.useMemo(
+    () => singleProductQuantity,
+    [singleProductQuantity]
+  );
+
+  const [quantity, setQuantity] = React.useState(singleProductQuantity);
   let filledStars = new Array(rating).fill(0);
   let notFilledStars = new Array(5 - rating).fill(0);
-
   const filledWithStars = filledStars.map((_, index) => {
     return <StarIcon key={index} color="secondary" fontSize="small" />;
   });
@@ -53,7 +72,34 @@ const ProductCard = ({
       <StarOutlineIcon key={index} sx={{ color: "#d1cece" }} fontSize="small" />
     );
   });
+  const handleIncrement = () => {
+    console.log(singleProductQuantity);
+    const value: CartValue = {
+      id: id.toString(),
+      sessionId: session?.toString()!,
+    };
+    if (id) {
+      dispatch(addProductToCart(value)).then(() =>
+        dispatch(CartQuantityList({ sessionId: session! }))
+      );
+    }
+  };
 
+  const handleDecrement = () => {
+    const value: CartValue = {
+      id: id.toString(),
+      sessionId: session?.toString()!,
+    };
+    if (id) {
+      dispatch(extractProductFromCart(value)).then(() =>
+        dispatch(CartQuantityList({ sessionId: session! }))
+      );
+    }
+  };
+
+  useEffect(() => {
+    setQuantity(memoizedQuantity);
+  }, [memoizedQuantity]);
   return (
     <Box
       component={motion.li}
@@ -138,7 +184,7 @@ const ProductCard = ({
                 </span>
               </div>
             </div>
-            <div className="Btn-icons w-fit flex flex-col gap-2 justify-center items-center">
+            <div className="Btn-icons w-fit flex flex-col gap-2 justify-between items-center">
               <Button
                 sx={{
                   width: "fit",
@@ -147,11 +193,12 @@ const ProductCard = ({
                 }}
                 className="opacity-0 group-hover:opacity-100 transition-all duration-300 ease-in"
                 variant="outlined"
+                onClick={handleDecrement}
               >
                 {" "}
                 <RemoveIcon />
               </Button>
-
+              <span>{quantity} </span>
               <Button
                 sx={{
                   width: "fit",
@@ -159,6 +206,7 @@ const ProductCard = ({
                   padding: "2px",
                 }}
                 variant="outlined"
+                onClick={handleIncrement}
               >
                 {" "}
                 <AddIcon />
