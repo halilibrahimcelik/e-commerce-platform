@@ -8,6 +8,7 @@ import InputBase from "@mui/material/InputBase";
 import SearchIcon from "@mui/icons-material/Search";
 import { Button } from "@mui/material";
 import CustomTheme from "@/containers/homePage/theme";
+import Link from "next/link";
 type Props = {};
 const Search = styled("form")(({ theme }) => ({
   position: "relative",
@@ -65,28 +66,36 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 }));
 
 const Navbar = (props: Props) => {
+  const handleSearch = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    console.log("searching");
+    const formData = new FormData(e.currentTarget);
+    const searchedQuery = formData.get("search")?.toString();
+  };
   return (
     <CustomTheme>
       <header className="bg-white">
         <Wrapper component="nav" customClass={"py-5"}>
           <ul className=" justify-between grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
-            <li>
-              <Image
-                src={logo}
-                alt="beta logo"
-                width={120}
-                height={50}
-                className="object-cover"
-              />
+            <li className="flex items-end">
+              <Link href="/">
+                <Image
+                  src={logo}
+                  alt="beta logo"
+                  width={160}
+                  className="object-contain h-full"
+                />
+              </Link>
             </li>
             <li className="lg:col-span-2 lg:flex justify-end ">
-              <Search>
+              <Search onSubmit={handleSearch}>
                 <SearchIconWrapper>
                   <SearchIcon sx={{ color: "#abafb8" }} />
                 </SearchIconWrapper>
                 <StyledInputBase
                   placeholder="Search…"
                   inputProps={{ "aria-label": "search" }}
+                  name="search"
                 />
                 <Button
                   sx={{

@@ -30,7 +30,7 @@ const HomePageContainer = (props: Props) => {
   }, [memoizedThunks]);
   return (
     <Wrapper component="section">
-      <div className="fixed z-[-1]  bg-gradient-to-b from-[#d0cfcbc6] from-10% to-[#c2c0cce2] to-90% top-0 left-0 right-0 bottom-0"></div>
+      <div className="fixed z-[-1]  bg-gradient-to-b from-[#dde9f893] from-80% to-[#f6f9fc] to-100% top-0 left-0 right-0 bottom-0"></div>
     </Wrapper>
   );
 };
