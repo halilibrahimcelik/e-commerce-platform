@@ -1,4 +1,4 @@
-import { Products } from "@/lib/types";
+import { CartQuantity, CartValue, Products, SessionId } from "@/lib/types";
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 
 export interface GlobalState {
@@ -7,8 +7,11 @@ export interface GlobalState {
   session: string | null;
   products: Products[];
   defaultProducts: Products[];
+  cartQuantity: CartQuantity[];
+
   isSearched: boolean;
 }
+
 const initialState: GlobalState = {
   error: null,
   isLoading: false,
@@ -16,6 +19,7 @@ const initialState: GlobalState = {
   products: [],
   defaultProducts: [],
   isSearched: false,
+  cartQuantity: [],
 };
 export const createSession = createAsyncThunk(
   "globalState/createSession",
@@ -59,6 +63,85 @@ export const fetchProducts = createAsyncThunk(
   }
 );
 
+export const addProductToCart = createAsyncThunk(
+  "globalState/addProductToCart",
+  async (value: CartValue) => {
+    try {
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_ADD_TO_CART_URL}${value.id}`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "Session-ID": value.sessionId,
+          },
+        }
+      );
+      if (response.status !== 200) {
+        throw new Error("Failed to add product to cart");
+      }
+      if (response.ok) {
+        const outcome = await response.text();
+        console.log(outcome);
+        return outcome;
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  }
+);
+export const extractProductFromCart = createAsyncThunk(
+  "globalState/addProductToCart",
+  async (value: CartValue) => {
+    try {
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_SUBTRACT_FROM_CART_URL}${value.id}`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "Session-ID": value.sessionId,
+          },
+        }
+      );
+      if (response.status !== 200) {
+        throw new Error("Failed to remove product from cart");
+      }
+      if (response.ok) {
+        const outcome = await response.text();
+        console.log(outcome);
+        return outcome;
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  }
+);
+export const CartQuantityList = createAsyncThunk(
+  "globalState/CartQuantity",
+  async ({ sessionId: sessionId }: SessionId) => {
+    try {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_VIEW_CART_URL}`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          "SESSION-ID": sessionId,
+        },
+      });
+
+      if (response.status !== 200) {
+        throw new Error("Failed to fetch Cart List");
+      }
+
+      if (response.ok) {
+        const cartQuantity = await response.json();
+        return cartQuantity;
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  }
+);
 export const globalSlice = createSlice({
   initialState,
   name: "globalState",
@@ -79,7 +162,17 @@ export const globalSlice = createSlice({
       state.products = products;
       state.isSearched = false;
     },
+    productQuantity: (state, action) => {
+      const { id, quantity } = action.payload;
+      const product = state.cartQuantity.find(
+        (product) => product.productId === id
+      );
+      if (product) {
+        product.quantity = quantity;
+      }
+    },
   },
+
   extraReducers: (builder) => {
     builder
       .addCase(createSession.pending, (state) => {
@@ -102,6 +195,9 @@ export const globalSlice = createSlice({
       .addCase(fetchProducts.rejected, (state, action) => {
         state.isLoading = false;
         state.error = action.error.message!;
+      })
+      .addCase(CartQuantityList.fulfilled, (state, action) => {
+        state.cartQuantity = action.payload!;
       });
   },
 });
@@ -119,4 +215,16 @@ export const getDefaultProducts = (state: { globalState: GlobalState }) =>
   state.globalState.defaultProducts;
 export const getIsSearched = (state: { globalState: GlobalState }) => {
   return state.globalState.isSearched;
+};
+export const getCartQuantity = (state: { globalState: GlobalState }) =>
+  state.globalState.cartQuantity;
+
+export const getSingleProductQuantity = (
+  state: { globalState: GlobalState },
+  id: string
+) => {
+  const quantity = state.globalState.cartQuantity?.find(
+    (item) => item.productId === id
+  );
+  return quantity?.quantity;
 };

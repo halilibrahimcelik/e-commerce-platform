@@ -1,10 +1,10 @@
-import React from "react";
+import React, { useEffect } from "react";
 import Card from "@mui/material/Card";
 import CardActions from "@mui/material/CardActions";
 import CardContent from "@mui/material/CardContent";
 import { motion } from "framer-motion";
 import Button from "@mui/material/Button";
-import { Products } from "@/lib/types";
+import { CartValue, Products } from "@/lib/types";
 import Image from "next/image";
 import StarIcon from "@mui/icons-material/Star";
 import StarOutlineIcon from "@mui/icons-material/StarOutline";
@@ -17,6 +17,16 @@ import RemoveRedEyeIcon from "@mui/icons-material/RemoveRedEye";
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import Divider from "@mui/material/Divider";
+import { useAppDispatch } from "@/store/store";
+import {
+  CartQuantityList,
+  GlobalState,
+  addProductToCart,
+  extractProductFromCart,
+  getSession,
+  getSingleProductQuantity,
+} from "@/store/global-slice";
+import { useSelector } from "react-redux";
 
 const iconClass = {
   width: "fit",
@@ -41,10 +51,19 @@ const ProductCard = ({
   price,
   rating,
 }: Products) => {
-  console.log(originalPrice);
+  const dispatch = useAppDispatch();
+  const session = useSelector(getSession);
+  const singleProductQuantity = useSelector(
+    (state: { globalState: GlobalState }) => getSingleProductQuantity(state, id)
+  );
+  const memoizedQuantity = React.useMemo(
+    () => singleProductQuantity,
+    [singleProductQuantity]
+  );
+
+  const [quantity, setQuantity] = React.useState(singleProductQuantity);
   let filledStars = new Array(rating).fill(0);
   let notFilledStars = new Array(5 - rating).fill(0);
-
   const filledWithStars = filledStars.map((_, index) => {
     return <StarIcon key={index} color="secondary" fontSize="small" />;
   });
@@ -53,7 +72,34 @@ const ProductCard = ({
       <StarOutlineIcon key={index} sx={{ color: "#d1cece" }} fontSize="small" />
     );
   });
+  const handleIncrement = () => {
+    console.log(singleProductQuantity);
+    const value: CartValue = {
+      id: id.toString(),
+      sessionId: session?.toString()!,
+    };
+    if (id) {
+      dispatch(addProductToCart(value)).then(() =>
+        dispatch(CartQuantityList({ sessionId: session! }))
+      );
+    }
+  };
 
+  const handleDecrement = () => {
+    const value: CartValue = {
+      id: id.toString(),
+      sessionId: session?.toString()!,
+    };
+    if (id) {
+      dispatch(extractProductFromCart(value)).then(() =>
+        dispatch(CartQuantityList({ sessionId: session! }))
+      );
+    }
+  };
+
+  useEffect(() => {
+    setQuantity(memoizedQuantity);
+  }, [memoizedQuantity]);
   return (
     <Box
       component={motion.li}
@@ -121,7 +167,15 @@ const ProductCard = ({
             </Button>
           </div>
         </div>
-        <CardContent>
+        <CardContent
+          sx={{
+            minHeight: 130,
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "space-between",
+            position: "relative",
+          }}
+        >
           <h4 className="text-md font-bold">{name}</h4>
           <div className="flex justify-between">
             <div className="star-icons flex flex-col gap-2">
@@ -138,27 +192,39 @@ const ProductCard = ({
                 </span>
               </div>
             </div>
-            <div className="Btn-icons w-fit flex flex-col gap-2 justify-center items-center">
+            <div className="Btn-icons   w-fit flex flex-col gap-2 justify-between items-center">
+              {quantity! > 0 && (
+                <Button
+                  sx={{
+                    width: "fit",
+                    minWidth: "auto !important",
+                    padding: "2px",
+                    position: "absolute",
+                    top: "16px",
+                    right: "16px",
+                  }}
+                  className="opacity-20   group-hover:opacity-100 transition-all duration-300 ease-in"
+                  variant="outlined"
+                  onClick={handleDecrement}
+                >
+                  {" "}
+                  <RemoveIcon />
+                </Button>
+              )}
+              <p className="self-center justify-center text-center w-[28px] ">
+                {quantity === 0 ? "" : quantity}{" "}
+              </p>
               <Button
                 sx={{
                   width: "fit",
                   minWidth: "auto !important",
                   padding: "2px",
-                }}
-                className="opacity-0 group-hover:opacity-100 transition-all duration-300 ease-in"
-                variant="outlined"
-              >
-                {" "}
-                <RemoveIcon />
-              </Button>
-
-              <Button
-                sx={{
-                  width: "fit",
-                  minWidth: "auto !important",
-                  padding: "2px",
+                  position: "absolute",
+                  bottom: "16px",
+                  right: "16px",
                 }}
                 variant="outlined"
+                onClick={handleIncrement}
               >
                 {" "}
                 <AddIcon />
@@ -166,10 +232,6 @@ const ProductCard = ({
             </div>
           </div>
         </CardContent>
-        <CardActions>
-          <Button size="small">Share</Button>
-          <Button size="small">Learn More</Button>
-        </CardActions>
       </Card>
     </Box>
   );
