@@ -10,6 +10,7 @@ const config: Config = {
   theme: {
     colors: {
       default: "#d1cece",
+      primary: "#c24b5a",
     },
     extend: {
       backgroundImage: {
