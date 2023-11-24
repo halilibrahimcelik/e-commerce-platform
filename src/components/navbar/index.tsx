@@ -3,11 +3,10 @@ import Wrapper from "../wrapper";
 import Image from "next/image";
 import logo from "@/assets/logo-beta.png";
 import { styled, alpha } from "@mui/material/styles";
-
+import { motion } from "framer-motion";
 import InputBase from "@mui/material/InputBase";
 import SearchIcon from "@mui/icons-material/Search";
 import { Button } from "@mui/material";
-import CustomTheme from "@/containers/homePage/theme";
 import Link from "next/link";
 import { useAppDispatch } from "@/store/store";
 import { searchedProduct } from "@/store/global-slice";
@@ -79,7 +78,12 @@ const Navbar = (props: Props) => {
     }
   };
   return (
-    <header className="bg-white">
+    <motion.header
+      initial={{ y: -100, opacity: 0 }}
+      animate={{ y: 0, opacity: 1 }}
+      transition={{ delay: 0.2, duration: 0.4 }}
+      className="bg-white"
+    >
       <Wrapper component="nav" customClass={"py-5"}>
         <ul className=" justify-between grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
           <li className="flex items-end">
@@ -119,7 +123,7 @@ const Navbar = (props: Props) => {
           </li>
         </ul>
       </Wrapper>
-    </header>
+    </motion.header>
   );
 };
 

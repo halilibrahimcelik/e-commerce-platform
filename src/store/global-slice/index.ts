@@ -7,6 +7,7 @@ export interface GlobalState {
   session: string | null;
   products: Products[];
   defaultProducts: Products[];
+  isSearched: boolean;
 }
 const initialState: GlobalState = {
   error: null,
@@ -14,6 +15,7 @@ const initialState: GlobalState = {
   session: null,
   products: [],
   defaultProducts: [],
+  isSearched: false,
 };
 export const createSession = createAsyncThunk(
   "globalState/createSession",
@@ -70,10 +72,12 @@ export const globalSlice = createSlice({
           .includes(searchedProduct.toLowerCase().trim())
       );
       state.products = filteredProducts;
+      state.isSearched = true;
     },
     resetProducts: (state, action) => {
       const { products } = action.payload;
       state.products = products;
+      state.isSearched = false;
     },
   },
   extraReducers: (builder) => {
@@ -113,3 +117,6 @@ export const getLoading = (state: { globalState: GlobalState }) =>
   state.globalState.isLoading;
 export const getDefaultProducts = (state: { globalState: GlobalState }) =>
   state.globalState.defaultProducts;
+export const getIsSearched = (state: { globalState: GlobalState }) => {
+  return state.globalState.isSearched;
+};
