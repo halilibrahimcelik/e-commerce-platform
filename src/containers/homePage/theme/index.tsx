@@ -31,6 +31,13 @@ const CustomTheme = ({ children }: Props) => {
               },
             },
           },
+          MuiInputBase: {
+            styleOverrides: {
+              root: {
+                backgroundColor: "red !important",
+              },
+            },
+          },
         },
       }),
     []
