@@ -6,12 +6,14 @@ export interface GlobalState {
   error: string | null;
   session: string | null;
   products: Products[];
+  defaultProducts: Products[];
 }
 const initialState: GlobalState = {
   error: null,
   isLoading: false,
   session: null,
   products: [],
+  defaultProducts: [],
 };
 export const createSession = createAsyncThunk(
   "globalState/createSession",
@@ -69,6 +71,10 @@ export const globalSlice = createSlice({
       );
       state.products = filteredProducts;
     },
+    resetProducts: (state, action) => {
+      const { products } = action.payload;
+      state.products = products;
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -86,6 +92,7 @@ export const globalSlice = createSlice({
       })
       .addCase(fetchProducts.fulfilled, (state, action) => {
         state.products = action.payload!;
+        state.defaultProducts = action.payload!;
         state.isLoading = false;
       })
       .addCase(fetchProducts.rejected, (state, action) => {
@@ -95,7 +102,7 @@ export const globalSlice = createSlice({
   },
 });
 
-export const { searchedProduct } = globalSlice.actions;
+export const { searchedProduct, resetProducts } = globalSlice.actions;
 export default globalSlice.reducer;
 
 export const getSession = (state: { globalState: GlobalState }) =>
@@ -104,3 +111,5 @@ export const getProducts = (state: { globalState: GlobalState }) =>
   state.globalState.products;
 export const getLoading = (state: { globalState: GlobalState }) =>
   state.globalState.isLoading;
+export const getDefaultProducts = (state: { globalState: GlobalState }) =>
+  state.globalState.defaultProducts;
