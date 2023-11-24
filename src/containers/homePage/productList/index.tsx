@@ -61,11 +61,19 @@ const ProductList = (props: Props) => {
         </AnimatePresence>
       </div>
 
-      <ul>
-        {productList.map((product) => {
-          return <li key={product.id}>{product.name}</li>;
-        })}
-      </ul>
+      {productList.length === 0 && isSearched ? (
+        <>
+          <p className="text-center text-sm  md:text-md lg:text-lg text-[#c24b5a] ">
+            No product have been found please try again.
+          </p>
+        </>
+      ) : (
+        <ul>
+          {productList.map((product) => {
+            return <li key={product.id}>{product.name}</li>;
+          })}
+        </ul>
+      )}
     </main>
   );
 };

@@ -65,7 +65,7 @@ export const globalSlice = createSlice({
   reducers: {
     searchedProduct: (state, action) => {
       const { searchedProduct } = action.payload;
-      const filteredProducts = state.products.filter((product) =>
+      const filteredProducts = state.defaultProducts.filter((product) =>
         product.name
           .toLowerCase()
           .trim()
