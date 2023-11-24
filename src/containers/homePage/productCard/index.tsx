@@ -10,8 +10,27 @@ import StarIcon from "@mui/icons-material/Star";
 import StarOutlineIcon from "@mui/icons-material/StarOutline";
 import AddIcon from "@mui/icons-material/Add";
 import RemoveIcon from "@mui/icons-material/Remove";
+import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import { Box } from "@mui/material";
 import Chip from "@mui/material/Chip";
+import RemoveRedEyeIcon from "@mui/icons-material/RemoveRedEye";
+import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
+import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
+import Divider from "@mui/material/Divider";
+
+const iconClass = {
+  width: "fit",
+  minWidth: "auto !important",
+  padding: "2px",
+  color: "#939292",
+  backgroundColor: "#fff",
+  border: "none",
+  borderRadius: "8px",
+  "&:hover": {
+    outline: "none",
+    border: "none",
+  },
+};
 
 const ProductCard = ({
   discount,
@@ -46,8 +65,34 @@ const ProductCard = ({
         },
       }}
     >
-      <Card>
-        <div className="flex  bg-[#abafb845] h-[300px] items-center justify-center">
+      <Card className="group relative">
+        <div className="flex  relative bg-[#abafb845] h-[300px] items-center justify-center">
+          <Chip
+            label={discount}
+            className="absolute top-4 left-4"
+            color="primary"
+            sx={{
+              padding: "2px 6px",
+            }}
+          />
+          <Button
+            sx={{
+              width: "fit",
+              minWidth: "auto !important",
+              padding: "2px",
+              backgroundColor: "#fff",
+              border: "none",
+              position: "absolute",
+              top: "200px",
+              left: "4px",
+            }}
+            className="translate-x-[-100%] opacity-0 group-hover:translate-x-0 group-hover:opacity-100 transition-all duration-300 ease-in"
+            variant="outlined"
+          >
+            {" "}
+            <ArrowBackIcon />
+          </Button>
+
           <Image
             src={`${image}`}
             blurDataURL={`${image}`}
@@ -57,6 +102,24 @@ const ProductCard = ({
             alt={name}
             objectFit="cover"
           />
+          <div className="absolute flex gap-2 bg-[#fff] w-fit  px-4 py-1 rounded-lg  bottom-1 left-1/2 transform -translate-x-1/2 translate-y-[110%] opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all ease-in duration-300 ">
+            <Button sx={iconClass} variant="outlined">
+              {" "}
+              <RemoveRedEyeIcon />
+            </Button>
+            <Divider orientation="vertical" flexItem />
+
+            <Button sx={iconClass} variant="outlined">
+              {" "}
+              <FavoriteBorderIcon />
+            </Button>
+            <Divider orientation="vertical" flexItem />
+
+            <Button sx={iconClass} variant="outlined">
+              {" "}
+              <ShoppingCartIcon />
+            </Button>
+          </div>
         </div>
         <CardContent>
           <h4 className="text-md font-bold">{name}</h4>
@@ -82,6 +145,7 @@ const ProductCard = ({
                   minWidth: "auto !important",
                   padding: "2px",
                 }}
+                className="opacity-0 group-hover:opacity-100 transition-all duration-300 ease-in"
                 variant="outlined"
               >
                 {" "}
