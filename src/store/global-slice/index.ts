@@ -6,12 +6,16 @@ export interface GlobalState {
   error: string | null;
   session: string | null;
   products: Products[];
+  defaultProducts: Products[];
+  isSearched: boolean;
 }
 const initialState: GlobalState = {
   error: null,
   isLoading: false,
   session: null,
   products: [],
+  defaultProducts: [],
+  isSearched: false,
 };
 export const createSession = createAsyncThunk(
   "globalState/createSession",
@@ -58,7 +62,24 @@ export const fetchProducts = createAsyncThunk(
 export const globalSlice = createSlice({
   initialState,
   name: "globalState",
-  reducers: {},
+  reducers: {
+    searchedProduct: (state, action) => {
+      const { searchedProduct } = action.payload;
+      const filteredProducts = state.defaultProducts.filter((product) =>
+        product.name
+          .toLowerCase()
+          .trim()
+          .includes(searchedProduct.toLowerCase().trim())
+      );
+      state.products = filteredProducts;
+      state.isSearched = true;
+    },
+    resetProducts: (state, action) => {
+      const { products } = action.payload;
+      state.products = products;
+      state.isSearched = false;
+    },
+  },
   extraReducers: (builder) => {
     builder
       .addCase(createSession.pending, (state) => {
@@ -75,6 +96,7 @@ export const globalSlice = createSlice({
       })
       .addCase(fetchProducts.fulfilled, (state, action) => {
         state.products = action.payload!;
+        state.defaultProducts = action.payload!;
         state.isLoading = false;
       })
       .addCase(fetchProducts.rejected, (state, action) => {
@@ -84,6 +106,7 @@ export const globalSlice = createSlice({
   },
 });
 
+export const { searchedProduct, resetProducts } = globalSlice.actions;
 export default globalSlice.reducer;
 
 export const getSession = (state: { globalState: GlobalState }) =>
@@ -92,3 +115,8 @@ export const getProducts = (state: { globalState: GlobalState }) =>
   state.globalState.products;
 export const getLoading = (state: { globalState: GlobalState }) =>
   state.globalState.isLoading;
+export const getDefaultProducts = (state: { globalState: GlobalState }) =>
+  state.globalState.defaultProducts;
+export const getIsSearched = (state: { globalState: GlobalState }) => {
+  return state.globalState.isSearched;
+};
