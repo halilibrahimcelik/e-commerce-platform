@@ -338,9 +338,23 @@ textarea {
 input::placeholder,
 textarea::placeholder {
   opacity: 1; /* 1 */
-  color: theme("colors.gray.400", #9ca3af); /* 2 */
+  /* color: theme("colors.gray.400", #9ca3af); /* 2 */
 }
-
+@-webkit-keyframes autofill {
+  0%,
+  100% {
+    color: #666;
+    background: transparent;
+  }
+}
+input:-webkit-autofill {
+  -webkit-background-clip: text;
+}
+input:-webkit-autofill {
+  -webkit-animation-delay: 1s; /* Safari support - any positive time runs instantly */
+  -webkit-animation-name: autofill;
+  -webkit-animation-fill-mode: both;
+}
 /*
 Set the default cursor for buttons.
 */
