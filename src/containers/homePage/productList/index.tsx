@@ -10,6 +10,7 @@ import { useSelector } from "react-redux";
 import ClearIcon from "@mui/icons-material/Clear";
 import { useAppDispatch } from "@/store/store";
 import { motion, AnimatePresence } from "framer-motion";
+import ProductCard from "../productCard";
 type Props = {};
 
 const ProductList = (props: Props) => {
@@ -31,7 +32,7 @@ const ProductList = (props: Props) => {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              transition={{ duration: 0.4, delay: 0.4 }}
+              transition={{ duration: 0.4, delay: 0.2 }}
               className="flex items-end justify-between  absolute top-0 left-0 right-0 bottom-0 "
             >
               <h1 className="text-xl font-medium ">Searched Products</h1>
@@ -53,7 +54,8 @@ const ProductList = (props: Props) => {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              transition={{ duration: 0.4, delay: 0.4 }}
+              transition={{ duration: 0.4, delay: 0.2 }}
+              className="flex items-end justify-center  absolute top-0 left-0 right-0 bottom-0"
             >
               <h1 className="text-xl font-medium  text-center">Products</h1>
             </motion.div>
@@ -68,9 +70,9 @@ const ProductList = (props: Props) => {
           </p>
         </>
       ) : (
-        <ul>
+        <ul className="flex flex-wrap lg:grid lg:grid-cols-3 lg:px-10 items-center justify-center gap-5 xl:gap-7">
           {productList.map((product) => {
-            return <li key={product.id}>{product.name}</li>;
+            return <ProductCard {...product} key={product.id} />;
           })}
         </ul>
       )}

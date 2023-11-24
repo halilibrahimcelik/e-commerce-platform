@@ -8,6 +8,9 @@ const config: Config = {
     "./src/containers/**/*.{js,ts,jsx,tsx,mdx}",
   ],
   theme: {
+    colors: {
+      default: "#d1cece",
+    },
     extend: {
       backgroundImage: {
         "gradient-radial": "radial-gradient(var(--tw-gradient-stops))",
