@@ -167,7 +167,15 @@ const ProductCard = ({
             </Button>
           </div>
         </div>
-        <CardContent>
+        <CardContent
+          sx={{
+            minHeight: 130,
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "space-between",
+            position: "relative",
+          }}
+        >
           <h4 className="text-md font-bold">{name}</h4>
           <div className="flex justify-between">
             <div className="star-icons flex flex-col gap-2">
@@ -184,26 +192,36 @@ const ProductCard = ({
                 </span>
               </div>
             </div>
-            <div className="Btn-icons w-fit flex flex-col gap-2 justify-between items-center">
+            <div className="Btn-icons   w-fit flex flex-col gap-2 justify-between items-center">
+              {quantity! > 0 && (
+                <Button
+                  sx={{
+                    width: "fit",
+                    minWidth: "auto !important",
+                    padding: "2px",
+                    position: "absolute",
+                    top: "16px",
+                    right: "16px",
+                  }}
+                  className="opacity-20   group-hover:opacity-100 transition-all duration-300 ease-in"
+                  variant="outlined"
+                  onClick={handleDecrement}
+                >
+                  {" "}
+                  <RemoveIcon />
+                </Button>
+              )}
+              <p className="self-center justify-center text-center w-[28px] ">
+                {quantity === 0 ? "" : quantity}{" "}
+              </p>
               <Button
                 sx={{
                   width: "fit",
                   minWidth: "auto !important",
                   padding: "2px",
-                }}
-                className="opacity-0 group-hover:opacity-100 transition-all duration-300 ease-in"
-                variant="outlined"
-                onClick={handleDecrement}
-              >
-                {" "}
-                <RemoveIcon />
-              </Button>
-              <span>{quantity} </span>
-              <Button
-                sx={{
-                  width: "fit",
-                  minWidth: "auto !important",
-                  padding: "2px",
+                  position: "absolute",
+                  bottom: "16px",
+                  right: "16px",
                 }}
                 variant="outlined"
                 onClick={handleIncrement}
@@ -214,10 +232,6 @@ const ProductCard = ({
             </div>
           </div>
         </CardContent>
-        <CardActions>
-          <Button size="small">Share</Button>
-          <Button size="small">Learn More</Button>
-        </CardActions>
       </Card>
     </Box>
   );
