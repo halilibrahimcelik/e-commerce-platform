@@ -9,7 +9,7 @@ import React from "react";
 import { useSelector } from "react-redux";
 import ClearIcon from "@mui/icons-material/Clear";
 import { useAppDispatch } from "@/store/store";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence, LayoutGroup } from "framer-motion";
 import ProductCard from "../productCard";
 type Props = {};
 
@@ -70,11 +70,13 @@ const ProductList = (props: Props) => {
           </p>
         </>
       ) : (
-        <ul className="flex flex-wrap lg:grid lg:grid-cols-3 lg:px-10 items-center justify-center gap-5 xl:gap-7">
-          {productList.map((product) => {
-            return <ProductCard {...product} key={product.id} />;
-          })}
-        </ul>
+        <LayoutGroup>
+          <ul className="flex flex-wrap lg:grid lg:grid-cols-3 lg:px-10 items-center justify-center gap-5 xl:gap-7">
+            {productList.map((product) => {
+              return <ProductCard {...product} key={product.id} />;
+            })}
+          </ul>
+        </LayoutGroup>
       )}
     </main>
   );
