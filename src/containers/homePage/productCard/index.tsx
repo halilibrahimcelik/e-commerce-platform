@@ -18,6 +18,7 @@ import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import Divider from "@mui/material/Divider";
 import { useAppDispatch } from "@/store/store";
+import Tooltip from "@mui/material/Tooltip";
 import {
   CartQuantityList,
   GlobalState,
@@ -162,22 +163,31 @@ const ProductCard = ({
             objectFit="cover"
           />
           <div className="absolute flex gap-2 bg-[#fff] w-fit  px-4 py-1 rounded-lg  bottom-1 left-1/2 transform -translate-x-1/2 translate-y-[110%] opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all ease-in duration-300 ">
-            <Button sx={iconClass} variant="outlined">
-              {" "}
-              <RemoveRedEyeIcon />
-            </Button>
+            <Tooltip title="Review">
+              <Button sx={iconClass} variant="outlined">
+                {" "}
+                <RemoveRedEyeIcon />
+              </Button>
+            </Tooltip>
+            <Divider orientation="vertical" flexItem />
+            <Tooltip title="Add To Favorites">
+              <Button
+                sx={iconClass}
+                title="Add To Favorites"
+                variant="outlined"
+              >
+                {" "}
+                <FavoriteBorderIcon />
+              </Button>
+            </Tooltip>
             <Divider orientation="vertical" flexItem />
 
-            <Button sx={iconClass} variant="outlined">
-              {" "}
-              <FavoriteBorderIcon />
-            </Button>
-            <Divider orientation="vertical" flexItem />
-
-            <Button sx={iconClass} variant="outlined">
-              {" "}
-              <ShoppingCartIcon />
-            </Button>
+            <Tooltip title="Add to Cart">
+              <Button sx={iconClass} variant="outlined">
+                {" "}
+                <ShoppingCartIcon />
+              </Button>
+            </Tooltip>
           </div>
         </div>
         <CardContent
