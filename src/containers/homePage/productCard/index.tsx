@@ -103,6 +103,19 @@ const ProductCard = ({
   return (
     <Box
       component={motion.li}
+      layout
+      initial={{ opacity: 0, y: 100 }}
+      animate={{
+        opacity: 1,
+        y: 0,
+        transition: { delay: 0.1 * Number(id), ease: "linear" },
+      }}
+      exit={{ opacity: 0, y: -100 }}
+      transition={{
+        delay: 0.2,
+        duration: 0.4,
+        staggerChildren: 0.2 * Number(id),
+      }}
       sx={{
         minWidth: {
           xs: "90%",
@@ -203,7 +216,7 @@ const ProductCard = ({
                     top: "16px",
                     right: "16px",
                   }}
-                  className="opacity-20   group-hover:opacity-100 transition-all duration-300 ease-in"
+                  className="opacity-0  group-hover:opacity-100 transition-all duration-300 ease-in"
                   variant="outlined"
                   onClick={handleDecrement}
                 >

@@ -83,7 +83,7 @@ const Navbar = (props: Props) => {
       initial={{ y: -100, opacity: 0 }}
       animate={{ y: 0, opacity: 1 }}
       transition={{ delay: 0.2, duration: 0.4 }}
-      className="bg-white"
+      className="bg-[#fff]"
     >
       <Wrapper component="nav" customClass={"py-5"}>
         <ul className=" justify-between grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
