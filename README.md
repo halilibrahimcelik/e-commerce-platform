@@ -1,4 +1,4 @@
-# E-Commerce Product Cart Application
+# E-Commerce Application
 
 
 ## Description
